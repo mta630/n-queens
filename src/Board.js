@@ -62,7 +62,7 @@
     },
 
 
-/*
+    /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
@@ -79,12 +79,21 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      var arr = this.get(rowIndex);
+
+      var result = arr.reduce((x, y) => x + y);
+
+      return result > 1;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      // have variable that stores the board (matrix)
+      // if some of the rows have conflict
+      // return true
+      var result = this.rows().some((x, i) => this.hasRowConflictAt(i));
+      return result;
+
     },
 
 
@@ -94,12 +103,19 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      var arr = [];
+
+      this.rows().forEach((currentRow) => currentRow.forEach((currentElement, i) => i === colIndex ? arr.push(currentElement) : null));
+
+      var result = arr.reduce((x, y) => x + y);
+
+      return result > 1;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var result = this.rows().some((x, i) => this.hasColConflictAt(i));
+      return result;
     },
 
 
@@ -109,12 +125,40 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var arr = [];
+
+      this.rows().forEach((x, xIndex) => x.forEach((y, yIndex) => yIndex - xIndex === majorDiagonalColumnIndexAtFirstRow ? arr.push(y) : null));
+
+
+
+      // [[0, 0, 0, 0],  [(0,0), (0,1), (0,2), (0,3)]
+      //  [0, 0, 0, 0]   [(1,0), (1,1), (1,2), (1,3)]
+      //  [0, 0, 0, 0]   [(2,0), (2,1), (2,2), (2,3)]
+      //  [0, 0, 0, 0]]  [(3,0), (3,1), (3,2), (3,3)]
+      //
+      // [[0, 0, 0, 0],  [(0,0), (0,1), (0,2), (0,3), (0,4)]
+      //  [0, 0, 0, 0]   [(1,0), (1,1), (1,2), (1,3), (1,4)]
+      //  [0, 0, 0, 0]   [(2,0), (2,1), (2,2), (2,3), (2,4)]
+      //  [0, 0, 0, 0]   [(3,0), (3,1), (3,2), (3,3), (3,4)]
+      //  [0, 0, 0, 0]]  [(4,0), (4,1), (4,2), (4,3), (4,4)]
+      //
+      // [[0, 0, 0, 0],  [(0,0), (0,1), (0,2), (0,3), (0,4), (0,5)]
+      //  [0, 0, 0, 0]   [(1,0), (1,1), (1,2), (1,3), (1,4), (1,5)]
+      //  [0, 0, 0, 0]   [(2,0), (2,1), (2,2), (2,3), (2,4), (2,5)]
+      //  [0, 0, 0, 0]   [(3,0), (3,1), (3,2), (3,3), (3,4), (3,5)]
+      //  [0, 0, 0, 0]   [(4,0), (4,1), (4,2), (4,3), (4,4), (4,5)]
+      // [[0, 0, 0, 0]]  [(5,0), (5,1), (5,2), (5,3), (5,4), (5,5)]
+
+      var result = arr.reduce((x, y) => x + y);
+      return result > 1;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      var matrix = [];
+      this.rows()[0].forEach((x, i) => matrix.push((i - 0), (0 - i)));
+      var result = matrix.some((x) => this.hasMajorDiagonalConflictAt(x));
+      return result;
     },
 
 
@@ -124,12 +168,24 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var arr = [];
+
+      this.rows().forEach((x, xIndex) => x.forEach((y, yIndex) => yIndex + xIndex === minorDiagonalColumnIndexAtFirstRow ? arr.push(y) : null));
+
+      var result = arr.reduce((x, y) => x + y);
+      return result > 1;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      // if n is the size of the board (4x4 board = nxn)
+      // the maximum number for checking diagonals is 2n - 1
+
+      var matrix = [1, 2, 3, 4, 5];
+
+      this.rows()[0].forEach((x, i) => matrix.push());
+      var result = matrix.some((x) => this.hasMinorDiagonalConflictAt(x));
+      return result;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
