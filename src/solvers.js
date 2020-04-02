@@ -68,56 +68,43 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var numOfQueens = 0;
   var board = new Board({'n': n});
-
-  console.log('n = ', n);
-
+  // edge cases
   if (n === 0 || n === 2 || n === 3) {
     return board.rows();
   }
-
-  var makeRows = function (rowIndex, colStart) {
-    // base case:
-    // if end of board is reached
-    if (rowIndex === n) {
-      // return the rows
-      return board.rows();
-    // for all columns in the matrix
-    } else {
-      for (var colIndex = colStart; colIndex < n; colIndex++) {
-        // toggle piece
-        board.togglePiece(rowIndex, colIndex);
-        numOfQueens++;
-        // if there are no conflicts
-        if (!board.hasAnyQueensConflicts()) {
-          // return recursion on the next row
-          return makeRows(rowIndex + 1, 0);
-        } else {
-          // turn piece back off if there is a conflict
-          board.togglePiece(rowIndex, colIndex);
-          numOfQueens--;
-        }
-      }
-    }
-  };
-
   if (n === 1) {
     return [[1]];
   }
 
-  for (var i = 0; i < board.rows()[0].length; i ++) {
-    var solution = makeRows(0, i);
-    console.log("queen value : ", numOfQueens);
-    console.log(board.rows());
-    if (numOfQueens === n) {
-      console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-      return solution;
+  var makeRows = function (testBoard, rowIndex) {
+    // base case:
+    // if end of board is reached
+    if (rowIndex === n) {
+      // return the rows
+      return testBoard.rows();
+    // for all columns in the matrix
     } else {
-      numOfQueens = 0;
-      board = new Board({'n': n})
+      for (var colIndex = 0; colIndex < n; colIndex++) {
+        // toggle piece
+        testBoard.togglePiece(rowIndex, colIndex);
+        // if there are no conflicts
+        if (!testBoard.hasAnyQueensConflicts()) {
+          var result = makeRows(testBoard, rowIndex + 1);
+          // only return if the last row is an array
+          if (Array.isArray(result)) {
+            return result;
+          }
+          // reloop to last possible position for row
+        }
+        testBoard.togglePiece(rowIndex, colIndex);
+      }
     }
   };
+
+  var solution = makeRows(board, 0);
+
+  return solution;
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
