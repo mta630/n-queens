@@ -80,7 +80,6 @@
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
       var arr = this.get(rowIndex);
-      console.log(this.changed);
       var result = arr.reduce((x, y) => x + y);
 
       return result > 1;
