@@ -6,5 +6,8 @@
     "start": "npx live-server"
   },
   "author": "Hack Reactor <curriculum.team@hackreactor.com>",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "microtime": "^3.0.0"
+  }
 }

@@ -80,11 +80,12 @@
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
       var arr = this.get(rowIndex);
-
+      console.log(this.changed);
       var result = arr.reduce((x, y) => x + y);
 
       return result > 1;
     },
+    // Time complexity - O(n)
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
@@ -95,8 +96,7 @@
       return result;
 
     },
-
-
+    // Time complexity - O(n)
 
     // COLUMNS - run from top to bottom
     // --------------------------------------------------------------
@@ -111,12 +111,16 @@
 
       return result > 1;
     },
+    // Time complexity - O(n^2)
+
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
       var result = this.rows().some((x, i) => this.hasColConflictAt(i));
       return result;
     },
+
+    // Time complexity - O(n^2)
 
     // [[0, 0, 0, 0],  [(0,0), (0,1), (0,2), (0,3)]
     //  [0, 0, 0, 0]   [(1,0), (1,1), (1,2), (1,3)]
@@ -148,6 +152,8 @@
       var result = arr.reduce((x, y) => x + y);
       return result > 1;
     },
+    // Time complexity - O(n^2)
+
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
@@ -159,7 +165,7 @@
       }
       return false;
     },
-
+    // Time complexity - O(n^2)
 
 
     // Minor Diagonals - go from top-right to bottom-left
@@ -179,6 +185,8 @@
 
       return false;
     },
+
+    // Time complexity - O(n^2)
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
@@ -201,6 +209,8 @@
 
       return false;
     }
+
+    // Time complexity - O(n^2)
 
     /*--------------------  End of Helper Functions  ---------------------*/
 
