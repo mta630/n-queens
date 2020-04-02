@@ -25,20 +25,12 @@
   <body>
     <script src="lib/jquery-1.8.3.js"></script>
     <script src="lib/underscore.js"></script>
-<script>
-    window.underscore = _.noConflict()
-</script>
     <script src="lib/backbone.js"></script>
     <script src="src/Board.js"></script>
     <script src="src/BoardView.js"></script>
     <script src="src/solvers.js"></script>
-    <script src="lib/lodash/lodash.js"></script>
-<script>
-    window.lodash = _.noConflict();
-</script>
-    <script src="lib/platform/platform.js"></script>
-    <script src="lib/benchmark/benchmark.js"></script>
     <script>
+      // This function uses a board visualizer lets you view an interactive version of any piece matrix.
       window.displayBoard = function(matrix){
         $('body').html(
           new BoardView({
@@ -54,38 +46,12 @@
           [1, 0, 0, 0],
           [0, 0, 1, 0]
         ]);
+
         var n = 4;
         findNRooksSolution(n);
         countNRooksSolutions(n);
         findNQueensSolution(n);
         countNQueensSolutions(n);
-      });
-      $(function() {
-        var n = 4;
-        console.log(countNQueensSolutions(n));
-        var suite = new Benchmark.Suite();
-        suite.add('Speed of countNQueensSolutions (4)', function () {
-          countNQueensSolutions(4);
-        });
-
-        suite.add('Speed of countNQueensSolutions (5)', function () {
-          countNQueensSolutions(5);
-        });
-
-        suite.add('Speed of countNQueensSolutions (6)'), function () {
-          countNQueensSolutions(6);
-        };
-
-        suite.on('cycle', function(event) {
-          console.log(String(event.target));
-        });
-        suite.on('complete', function() {
-          console.log('Fastest is ' + this.filter('fastest').map('name'));
-        });
-        // run async
-        suite.run({ 'async': true });
-
-        suite.run();
       });
     </script>
   </body>
