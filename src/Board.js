@@ -80,9 +80,18 @@
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
       var arr = this.get(rowIndex);
-      var result = arr.reduce((x, y) => x + y);
+      var count = 0;
 
-      return result > 1;
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] === 1) {
+          count ++;
+        }
+        if (count > 1) {
+          return true;
+        }
+      }
+
+      return false;
     },
     // Time complexity - O(n)
 
@@ -102,15 +111,21 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      var arr = [];
+      var obj = this.attributes;
+      var count = 0;
 
-      this.rows().forEach((currentRow) => currentRow.forEach((currentElement, i) => i === colIndex ? arr.push(currentElement) : null));
+      for (key in obj) {
+        if (obj[key][colIndex] === 1) {
+          count ++;
+        }
+        if (count > 1) {
+          return true;
+        }
+      }
 
-      var result = arr.reduce((x, y) => x + y);
-
-      return result > 1;
+      return false;
     },
-    // Time complexity - O(n^2)
+    // Time complexity - O(n)
 
 
     // test if any columns on this board contain conflicts
@@ -119,52 +134,50 @@
       return result;
     },
 
-    // Time complexity - O(n^2)
-
-    // [[0, 0, 0, 0],  [(0,0), (0,1), (0,2), (0,3)]
-    //  [0, 0, 0, 0]   [(1,0), (1,1), (1,2), (1,3)]
-    //  [0, 0, 0, 0]   [(2,0), (2,1), (2,2), (2,3)]
-    //  [0, 0, 0, 0]]  [(3,0), (3,1), (3,2), (3,3)]
-    //
-    // [[0, 0, 0, 0],  [(0,0), (0,1), (0,2), (0,3), (0,4)]
-    //  [0, 0, 0, 0]   [(1,0), (1,1), (1,2), (1,3), (1,4)]
-    //  [0, 0, 0, 0]   [(2,0), (2,1), (2,2), (2,3), (2,4)]
-    //  [0, 0, 0, 0]   [(3,0), (3,1), (3,2), (3,3), (3,4)]
-    //  [0, 0, 0, 0]]  [(4,0), (4,1), (4,2), (4,3), (4,4)]
-    //
-    // [[0, 0, 0, 0],  [(0,0), (0,1), (0,2), (0,3), (0,4), (0,5)]
-    //  [0, 0, 0, 0]   [(1,0), (1,1), (1,2), (1,3), (1,4), (1,5)]
-    //  [0, 0, 0, 0]   [(2,0), (2,1), (2,2), (2,3), (2,4), (2,5)]
-    //  [0, 0, 0, 0]   [(3,0), (3,1), (3,2), (3,3), (3,4), (3,5)]
-    //  [0, 0, 0, 0]   [(4,0), (4,1), (4,2), (4,3), (4,4), (4,5)]
-    // [[0, 0, 0, 0]]  [(5,0), (5,1), (5,2), (5,3), (5,4), (5,5)]
+    // Time complexity - O(n)
 
     // Major Diagonals - go from top-left to bottom-right
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      var arr = [];
+      var obj = this.attributes;
+      var arr = this.rows();
+      var count = 0;
+      var startPoint = majorDiagonalColumnIndexAtFirstRow < 0 ? Math.abs(majorDiagonalColumnIndexAtFirstRow) : 0;
+      var colCount = majorDiagonalColumnIndexAtFirstRow > 0 ? majorDiagonalColumnIndexAtFirstRow : 0;
 
-      this.rows().forEach((x, xIndex) => x.forEach((y, yIndex) => yIndex - xIndex === majorDiagonalColumnIndexAtFirstRow ? arr.push(y) : null));
+      for (var i = startPoint; i < arr.length; i++) {
+        if (obj[i][colCount] === 1) {
+          count++;
+        }
+        colCount++;
+        if (count > 1) {
+          return true;
+        }
+      }
 
-      var result = arr.reduce((x, y) => x + y);
-      return result > 1;
+      return false;
     },
-    // Time complexity - O(n^2)
+    // Time complexity - O(n)
 
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      var matrix = [];
-      if (this.rows().length) {
-        this.rows()[0].forEach((x, i) => matrix.push((i - 0), (0 - i)));
-        var result = matrix.some((x) => this.hasMajorDiagonalConflictAt(x));
-        return result;
+      var matrix = [0];
+
+      for (var i = 1; i < this.rows().length; i++) {
+        matrix.push(i, -i);
+      }
+
+      for (var i = 0; i < matrix.length; i++) {
+        if (this.hasMajorDiagonalConflictAt(matrix[i])) {
+          return true;
+        }
       }
       return false;
     },
-    // Time complexity - O(n^2)
+    // Time complexity - O(n)
 
 
     // Minor Diagonals - go from top-right to bottom-left
@@ -172,44 +185,46 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      if (this.rows().length > 1) {
-        var arr = [];
-        this.rows().forEach((x, xIndex) => x.forEach((y, yIndex) => yIndex + xIndex === minorDiagonalColumnIndexAtFirstRow ? arr.push(y) : null));
+      var obj = this.attributes;
+      var arr = this.rows();
+      var count = 0;
+      var startPoint = minorDiagonalColumnIndexAtFirstRow < arr.length ? 0 : (minorDiagonalColumnIndexAtFirstRow - (arr.length - 1));
+      var colCount = minorDiagonalColumnIndexAtFirstRow < arr.length ? minorDiagonalColumnIndexAtFirstRow : arr.length - 1;
 
-        if (arr.length) {
-          var result = arr.reduce((x, y) => x + y);
-          return result > 1;
+      for (var i = startPoint; i < arr.length; i++) {
+        if (obj[i][colCount] === 1) {
+          count++;
+        }
+        colCount--;
+        if (count > 1) {
+          return true;
         }
       }
 
       return false;
     },
 
-    // Time complexity - O(n^2)
+    // Time complexity - O(n)
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      // if n is the size of the board (4x4 board = nxn)
-      // the maximum number for checking diagonals is 2n - 1
-
-      var matrix = [];
-
       var numDiagonals = this.rows().length * 2 - 1;
 
-      for (var i = 1; i <= numDiagonals; i ++) {
+      var matrix = [numDiagonals];
+
+      for (var i = 1; i < numDiagonals; i++) {
         matrix.push(i);
       }
 
-      if (matrix.length) {
-        this.rows()[0].forEach((x, i) => matrix.push());
-        var result = matrix.some((x) => this.hasMinorDiagonalConflictAt(x));
-        return result;
+      for (var i = 0; i < matrix.length; i++) {
+        if (this.hasMinorDiagonalConflictAt(matrix[i])) {
+          return true;
+        }
       }
-
       return false;
     }
 
-    // Time complexity - O(n^2)
+    // Time complexity - O(n)
 
     /*--------------------  End of Helper Functions  ---------------------*/
 
